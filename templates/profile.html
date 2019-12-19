@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block description %}"My profile page, something about me"{% endblock %}
+{% block title %}Profile{% endblock %}
+{% block user %}{{ user.name.upper() }}{% endblock %}
+{% block user_image %}{{ user.id }}.jpg{% endblock %}
+
+{% block pageContent %}
+
+<!-- HEADING -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">My profile</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+    </div>
+
+<!-- PROFILE PICTURE -->
+    <div class="row">
+        <div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-4 pb-4">
+            <!-- Card Header - Dropdown -->
+                <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-2 font-weight-bold text-primary">Profile picture</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Actions:</div>
+                      <a class="dropdown-item" href="#">Change profile photo</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Download profile photo</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="-file-image">
+                    <img style="width: {% if user.hierarchy=="Employee" %}13.5{% else %}16{% endif %}vw;"
+                         class="rounded-circle" id="{{user.id}}_photo" src="/static/employees_pictures/{{user.id}}.jpg"
+                         onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
+                  </div>
+                </div>
+            </div>
+        </div>
+
+<!-- BASIC INFORMATION -->
+        <div class="col-xl-9 col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Basic information</h6>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <tr><td width="45%">ID: </td><td>{{ user.id }}</tr>
+                        <tr><td>NAME: </td><td>{{ user.name }}</td></tr>
+                        <tr><td>SURNAME: </td><td>{{ user.surname }}</td></tr>
+                        <tr><td>Birthday: </td><td>{{ user.date_of_birth.date() }}</td></tr>
+                        <tr><td>Email: </td><td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td></tr>
+                        <tr><td>Hiring date: </td><td>{{ user.date_of_hiring.date() }}</td></tr>
+                        <tr><td>Job: </td><td>{% if user.hierarchy!="PM" %}{{ user.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
+                        <tr><td>Assigned to project: </td><td>
+                                            {% if user.assigned_to_project==False %}No
+                                            {% else %}Yes{% endif %}
+                                            </td></tr>
+                        {% if user.assigned_to_project==True %}
+                        <tr><td>Project id: </td><td>{{ user.project_id }}</td></tr>
+                        <tr><td>Role: </td><td>{{ user.role }}</td></tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

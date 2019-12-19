@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block description %}Here the managers are shown{% endblock %}
+{% block title %}Managers{% endblock %}
+{% block user %}{{ user.name.upper() }}{% endblock %}
+{% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block additional_css_or_js %}
+    <!-- Custom styles for this page -->
+  <link href="../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block pageContent %}
+<!-- Page Heading -->
+    <div class="container-fluid">
+          <h1 class="h3 mb-2 text-gray-800">Managers list</h1>
+          <br>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Personnel - Managers</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Surname</th>
+                      <th>Name</th>
+                      <th>Age</th>
+                      <th>Hierarchy</th>
+                      <th>Years of experience</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for person in personnel %}
+                    <tr>
+                      <th>{{person.surname}}</th>
+                      <th>{{person.name}}</th>
+                      <!-- CHANGE HERE, DOES NOT WORK WITH ANY DATE -->
+                      <th>{{2020 - person.date_of_birth.year}}</th>
+                      <th>{{person.hierarchy}}</th>
+                      <!-- CHANGE HERE, DOES NOT WORK WITH ANY DATE -->
+                      <th>{{2020 - person.date_of_hiring.year}}</th>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+{% endblock %}
