@@ -51,16 +51,18 @@
                 </div>
                 <div class="card-body">
                     <table>
-                        <tr><td width="45%">ID: </td><td>{{ user.id }}</tr>
+                        <tr><td width="40%">ID: </td><td>{{ user.id }}</tr>
                         <tr><td>NAME: </td><td>{{ user.name }}</td></tr>
                         <tr><td>SURNAME: </td><td>{{ user.surname }}</td></tr>
                         <tr><td>Birthday: </td><td>{{ user.date_of_birth.date() }}</td></tr>
                         <tr><td>Email: </td><td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td></tr>
                         <tr><td>Hiring date: </td><td>{{ user.date_of_hiring.date() }}</td></tr>
                         <tr><td>Job: </td><td>{% if user.hierarchy!="PM" %}{{ user.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
-                        <tr><td>Assigned to project: </td><td>
-                                            {% if user.assigned_to_project==False %}No
-                                            {% else %}Yes{% endif %}
+                        <tr><td>Status: </td><td>
+                                            {% if user.hierarchy == "Manager" %}Active{% else %}
+                                                {% if user.assigned_to_project==False %}Free
+                                                {% else %}Assigned to project{% endif %}
+                                            {% endif %}
                                             </td></tr>
                         {% if user.assigned_to_project==True %}
                         <tr><td>Project id: </td><td>{{ user.project_id }}</td></tr>

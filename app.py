@@ -76,6 +76,7 @@ class RequestsProjects(db.Model):
     id_project = db.Column(db.Integer, primary_key=True)
     skill = db.Column(db.String(30), primary_key=True)
     experience = db.Column(db.Integer, default=0)
+    satisfied = db.collate(db.Boolean, default=False)
 
 
 '''=================================================================================================================='''

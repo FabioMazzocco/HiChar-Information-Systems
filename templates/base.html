@@ -105,9 +105,12 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
 
-            <a class="collapse-item" href="all">All</a>
-            <a class="collapse-item" href="employees">Employees</a>
-            <a class="collapse-item" href="management">Management</a>
+            <a class="collapse-item" href="/all">All</a>
+            <a class="collapse-item" href="/employees">Employees</a>
+            <a class="collapse-item" href="/management">Management</a>
+            {% if user.hierarchy == "HR" %}
+            <a class="collapse-item" href="/new_employee">New employee</a>
+            {% endif %}
           </div>
         </div>
       {% elif user.hierarchy == "PM" %} <!- Section just for PM to check the employees' data (no HR and Management) -->
@@ -120,9 +123,22 @@
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">
+      {% if user.hierarchy == "Manager" %} <!- Section for Management to add new projects -->
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages1" aria-expanded="true" aria-controls="collapsePages">
+          <i class="fas fa-fw fa-chart-line"></i>
+          <span>Projects</span>
+        </a>
+        <div id="collapsePages1" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="/projects">All projects</a>
+            <a class="collapse-item" href="/new_project">New project</a>
+          </div>
+        </div>
+      {% else %} <!- Section for PM and HR to check the current porjects -->
         <a class="nav-link" href="/projects">
           <i class="fas fa-fw fa-chart-line"></i>
           <span>Projects</span></a>
+       {% endif %} <!- end if projects section -->
       </li>
 
       {% if user.hierarchy == "HR" %} <!- section for HR to receive requests for personnel -->
@@ -330,7 +346,8 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% block user %}{% endblock %}</span>
-                <img class="img-profile rounded-circle" src="/static/employees_pictures/{% block user_image %}{% endblock %}" onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
+                <img class="img-profile rounded-circle" src="/static/employees_pictures/{% block user_image %}{% endblock %}"
+                     onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
