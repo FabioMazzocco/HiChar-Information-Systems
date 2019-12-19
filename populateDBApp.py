@@ -1,12 +1,26 @@
 from app import db, EmployeesTable, UserPass, Roles,  Projects, Skills, PersonnelSkills, RequestsProjects
+from datetime import datetime
 '''=================================================================================================================='''
 '''=================================================================================================================='''
 '''================================================ Adding Employees ================================================'''
 '''=================================================================================================================='''
 '''=================================================================================================================='''
-# new_employee = EmployeesTable(id=222222, username="manager", name="Man", surname="Ager",\
-#                   email="manager@studenti.polito.it", hierarchy="Manager", date_of_birth=datetime.date(1997, 12, 13),\
-#                   date_of_hiring=datetime.date(2019, 12, 7), assigned_to_project=False, project_id=0, role=None)
+# the_id = 222222
+# the_username = "Man"
+# the_name = "Ager"
+# the_email = "manage@studenti.polito.it"
+# the_hierarchy = "Manager"  # First letter must be a capital letter. Possibilities: "Employee", "HR", "PM", "Manager"
+# the_date_of_birth = datetime.date(1997, 12, 13)
+# the_date_of_hiring = datetime.date(2019, 12, 7)
+# the_assigned_to_project = False   # Possibilities are: True or False (use False)
+# the_project_id = 0     # If the employee is not assigned to any project, use 0
+# the_role = None   # If the employee is not assigned to any project, use None
+
+# new_employee = EmployeesTable(id=the_id, username=the_username, name=the_name, surname=the_surname,\
+#                   email=the_email, hierarchy=the_hierarchy, date_of_birth=the_date_of_birth,\
+#                   date_of_hiring=the_date_of_hiring, assigned_to_project=the_assigned_to_project, \
+#                   project_id=the_project_id, role=the_role)
+
 # db.session.add(new_employee)
 # db.session.commit()
 # for employee in EmployeesTable.query.all():
@@ -18,7 +32,9 @@ from app import db, EmployeesTable, UserPass, Roles,  Projects, Skills, Personne
 '''========================================== Adding password to employees =========================================='''
 '''=================================================================================================================='''
 '''=================================================================================================================='''
-# user_pass = UserPass(id=222222, hashed_psw=hash_password("222222"))
+# the_id = 222222
+# the_password = "222222"
+# user_pass = UserPass(id=the_id, hashed_psw=hash_password(the_password))
 # db.session.add(user_pass)
 # db.session.commit()
 
@@ -31,11 +47,14 @@ from app import db, EmployeesTable, UserPass, Roles,  Projects, Skills, Personne
 '''================================================== Adding skills ================================================='''
 '''=================================================================================================================='''
 '''=================================================================================================================='''
-# Still need to add https://resumegenius.com/blog/resume-help/soft-skills from chapter 7 on
-# cat = "Work Ethic"
-# nam = "Time-management"
-# desc = "The process of organizing and planning how to divide your time between specific activities"
-# skill = Skills(soft_hard='Soft', category=cat, name=nam, description=desc)
+# Still need to add https://resumegenius.com/blog/resume-help/soft-skills from point 7 on
+
+# the_type = "Soft"    # Please mind the capital letter at the beginning. Possibilities: "Soft" or "Hard"
+# the_category = "Work Ethic"
+# the_name = "Time-management"
+# the_description = "The process of organizing and planning how to divide your time between specific activities"
+
+# skill = Skills(soft_hard=the_type, category=the_category, name=the_name, description=the_description)
 # db.session.add(skill)
 # db.session.commit()
 # print(len(Skills.query.all()))
@@ -49,8 +68,7 @@ from app import db, EmployeesTable, UserPass, Roles,  Projects, Skills, Personne
 the_project_id = 1
 the_name = "BlueCar"
 the_description = "Electric cars for car sharing all over the world"
-"""5 years = 5 times 12 months"""
-the_duration = 5*12
+the_duration = 5*12   # The duration is in months --> 5 years = 5 times 12 months = 60
 project = Projects(id=the_project_id, name=the_name, description=the_description, duration=the_duration)
 db.session.add(project)
 db.session.commit()

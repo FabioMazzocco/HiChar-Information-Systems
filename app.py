@@ -23,6 +23,7 @@ logged_user = None
 
 
 class EmployeesTable(db.Model):
+    __tablename__ = 'employeestable'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=False)
     name = db.Column(db.String(30), nullable=False)
@@ -40,16 +41,19 @@ class EmployeesTable(db.Model):
 
 
 class UserPass(db.Model):
+    __tablename__ = 'userpass'
     id = db.Column(db.Integer, primary_key=True)
     hashed_psw = db.Column(db.String, nullable=False)
 
 
 class Roles(db.Model):
+    __tablename__ = 'roles'
     role = db.Column(db.String(30), primary_key=True)
     description = db.Column(db.Text, nullable=False)
 
 
 class Projects(db.Model):
+    __tablename__ = 'projects'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -57,6 +61,7 @@ class Projects(db.Model):
 
 
 class Skills(db.Model):
+    __tablename__ = 'skills'
     name = db.Column(db.String(50), primary_key=True)
     soft_hard = db.Column(db.String(4), nullable=False)
     category = db.Column(db.String(30), nullable=False)
@@ -67,16 +72,18 @@ class Skills(db.Model):
 
 
 class PersonnelSkills(db.Model):
+    __tablename__ = 'personnelskills'
     id = db.Column(db.Integer, primary_key=True)
     skill_name = db.Column(db.String(50), primary_key=True)
     time = db.Column(db.Integer, nullable=True)
 
 
 class RequestsProjects(db.Model):
+    __tablename__ = 'requestsprojects'
     id_project = db.Column(db.Integer, primary_key=True)
     skill = db.Column(db.String(30), primary_key=True)
     experience = db.Column(db.Integer, default=0)
-    satisfied = db.collate(db.Boolean, default=False)
+    satisfied = db.Column(db.Boolean, default=False)
 
 
 '''=================================================================================================================='''
