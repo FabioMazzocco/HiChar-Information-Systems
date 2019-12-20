@@ -23,7 +23,7 @@ logged_user = None
 
 
 class EmployeesTable(db.Model):
-    __tablename__ = 'employeestable'
+    # __tablename__ = 'employeestable'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=False)
     name = db.Column(db.String(30), nullable=False)
@@ -41,19 +41,19 @@ class EmployeesTable(db.Model):
 
 
 class UserPass(db.Model):
-    __tablename__ = 'userpass'
+    # __tablename__ = 'userpass'
     id = db.Column(db.Integer, primary_key=True)
     hashed_psw = db.Column(db.String, nullable=False)
 
 
 class Roles(db.Model):
-    __tablename__ = 'roles'
+    # __tablename__ = 'roles'
     role = db.Column(db.String(30), primary_key=True)
     description = db.Column(db.Text, nullable=False)
 
 
 class Projects(db.Model):
-    __tablename__ = 'projects'
+    # __tablename__ = 'projects'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -61,7 +61,7 @@ class Projects(db.Model):
 
 
 class Skills(db.Model):
-    __tablename__ = 'skills'
+    # __tablename__ = 'skills'
     name = db.Column(db.String(50), primary_key=True)
     soft_hard = db.Column(db.String(4), nullable=False)
     category = db.Column(db.String(30), nullable=False)
@@ -72,14 +72,14 @@ class Skills(db.Model):
 
 
 class PersonnelSkills(db.Model):
-    __tablename__ = 'personnelskills'
+    # __tablename__ = 'personnelskills'
     id = db.Column(db.Integer, primary_key=True)
     skill_name = db.Column(db.String(50), primary_key=True)
     time = db.Column(db.Integer, nullable=True)
 
 
 class RequestsProjects(db.Model):
-    __tablename__ = 'requestsprojects'
+    # __tablename__ = 'requestsprojects'
     id_project = db.Column(db.Integer, primary_key=True)
     skill = db.Column(db.String(30), primary_key=True)
     experience = db.Column(db.Integer, default=0)
@@ -187,6 +187,16 @@ def only_managers():
     the_personnel = EmployeesTable.query.filter_by(hierarchy="Manager").order_by(EmployeesTable.surname).all()
     return render_template("only_management.html", user=logged_user, personnel=the_personnel, now=current_time)
 
+
+@app.route('/profile')
+def profile():
+    global logged_user
+    if logged_user is None:
+        return redirect('/', code=302)
+    # create a hashmap tp save the skills of the guyq
+    skills = Skills.query.all()
+    person_skills = PersonnelSkills.query.filter_by(id=logged_user.id)
+    return render_template('profile.html', user=logged_user)
 
 # This route treat every case except the login and the index(home)
 @app.route('/<string:pagename>', methods=['get', 'post'])

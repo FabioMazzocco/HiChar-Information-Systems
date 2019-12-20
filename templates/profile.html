@@ -4,6 +4,14 @@
 {% block title %}Profile{% endblock %}
 {% block user %}{{ user.name.upper() }}{% endblock %}
 {% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block additional_css_or_js   %}
+<script src="/static/js/demo/chart-pie-demo.js"></script>
+<script>
+window.onload = function(){
+    create("pieChartSkills", ["Soft", "Hard"], [55,44])
+}
+</script>
+{% endblock%}
 
 {% block pageContent %}
 
@@ -13,8 +21,8 @@
         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
     </div>
 
-<!-- PROFILE PICTURE -->
     <div class="row">
+    <!-- PROFILE PICTURE -->
         <div class="col-xl-3 col-lg-5">
             <div class="card shadow mb-4 pb-4">
             <!-- Card Header - Dropdown -->
@@ -43,8 +51,59 @@
             </div>
         </div>
 
-<!-- BASIC INFORMATION -->
+    <!-- BASIC INFORMATION -->
         <div class="col-xl-9 col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Basic information</h6>
+                </div>
+                <div class="card-body">
+                    <table>
+                        <tr><td width="40%">ID: </td><td>{{ user.id }}</tr>
+                        <tr><td>NAME: </td><td>{{ user.name }}</td></tr>
+                        <tr><td>SURNAME: </td><td>{{ user.surname }}</td></tr>
+                        <tr><td>Birthday: </td><td>{{ user.date_of_birth.date() }}</td></tr>
+                        <tr><td>Email: </td><td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td></tr>
+                        <tr><td>Hiring date: </td><td>{{ user.date_of_hiring.date() }}</td></tr>
+                        <tr><td>Job: </td><td>{% if user.hierarchy!="PM" %}{{ user.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
+                        <tr><td>Status: </td><td>
+                                            {% if user.hierarchy == "Manager" %}Active{% else %}
+                                                {% if user.assigned_to_project==False %}Free
+                                                {% else %}Assigned to project{% endif %}
+                                            {% endif %}
+                                            </td></tr>
+                        {% if user.assigned_to_project==True %}
+                        <tr><td>Project id: </td><td>{{ user.project_id }}</td></tr>
+                        <tr><td>Role: </td><td>{{ user.role }}</td></tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+    <!-- SOFT/HARD SKILLS DIVISION -->
+        <!-- Donut Chart -->
+            <div class="col-xl-5 col-lg-5">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Skills type</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-pie pt-4">
+                    <canvas id="pieChartSkills"></canvas>
+                  </div>
+                  <hr>
+                  Number of share of soft and hard skills with respect to the total skills
+                </div>
+              </div>
+            </div>
+
+    <!-- BASIC INFORMATION -->
+        <div class="col-xl-7 col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Basic information</h6>

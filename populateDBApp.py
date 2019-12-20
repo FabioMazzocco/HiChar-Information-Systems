@@ -55,15 +55,15 @@ from datetime import datetime
 # ADD SOFT SKILLS FROM https://resumegenius.com/blog/resume-help/soft-skills (ALL SKILL UNTIL CATEGORY 7 ADDED)
 # ADD HARD SKILLS (10-15 THAT YOU WANT)
 
-the_type = "Soft"    # Please mind the capital letter at the beginning. Possibilities: "Soft" or "Hard"
-the_category = "Interpersonal Skills"
-the_name = "Empathy"
-the_description = "The process of organizing and planning how to divide your time between specific activities"
+# the_type = "Soft"    # Please mind the capital letter at the beginning. Possibilities: "Soft" or "Hard"
+# the_category = "Interpersonal Skills"
+# the_name = "Empathy"
+# the_description = "The process of organizing and planning how to divide your time between specific activities"
 
-skill = Skills(soft_hard=the_type, category=the_category, name=the_name, description=the_description)
-db.session.add(skill)
-db.session.commit()
-print(len(Skills.query.all()))
+# skill = Skills(soft_hard=the_type, category=the_category, name=the_name, description=the_description)
+# db.session.add(skill)
+# db.session.commit()
+# print(len(Skills.query.all()))
 
 
 '''=================================================================================================================='''
