@@ -1,0 +1,32 @@
+4;Project management software;12;0
+4;Pivot tables;6;0
+4;Marketing Campaign Management;6;0
+4;Analytics;12;0
+4;Scheduling;24;0
+4;Trust;36;0
+4;Project Management;12;0
+4;Goal setting;4;0
+3;Project management software;12;0
+3;Storage and Data Management;12;0
+3;Digital communication;6;0
+3;HTML;6;0
+3;Critical observation;12;0
+3;Self-starter;12;0
+3;Mentoring;4;0
+3;Innovation;9;0
+2;Social media;12;0
+2;Risk Assessment;12;0
+2;Resource management;6;0
+2;User Experience (UX) Design;12;0
+2;Imagination;12;0
+2;Lateral thinking;6;0
+2;Decision-making;6;0
+2;Confidence;9;0
+1;iOS App Development;3;0
+1;Agile methodologies;12;0
+1;Google Analytics;6;0
+1;Foreign language;9;0
+1;Collaboration;24;0
+1;Time-management;48;0
+1;Diplomacy;12;0
+1;Focus;12;0

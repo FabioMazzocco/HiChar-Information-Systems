@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block description %}Here all the employees are shown{% endblock %}
+{% block title %}All employees{% endblock %}
+{% block user %}{{ user.name.upper() }}{% endblock %}
+{% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block additional_css_or_js %}
+    <!-- Custom styles for this page -->
+  <link href="../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block pageContent %}
+<!-- Page Heading -->
+    <div class="container-fluid">
+          <h1 class="h3 mb-2 text-gray-800">Complete personnel list</h1>
+          <br>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Personnel - All</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Length (months)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for project in projects %}
+                    {% if user.hierarchy == "PM" and user.project_id == project.id %}
+                    <tr style="background-color: #d3ff00">
+                    {% else %}
+                    <tr>
+                    {% endif %}
+                      <td>{{project.id}}</td>
+                      <td>{{project.name}}</td>
+                      <td>{{project.description}}</td>
+                      <td>{{project.duration}}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+{% endblock %}

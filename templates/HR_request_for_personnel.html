@@ -4,7 +4,134 @@
 {% block title %}Requests{% endblock %}
 {% block user %}{{ user.name.upper() }}{% endblock %}
 {% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block year %}{{ utilities[0].year }}{% endblock %}
+{% block additional_css_or_js %}
+<script>
+    function showProject(id){
+        let limit = $('#dataTable tr').length;
+        for (let i=0; i<limit; i++){
+            $("#"+i).css("display", "none")
+        }
+        $("#"+id).css("display", "block")
+    }
+
+</script>
+
+{% endblock %}
 
 {% block pageContent %}
+<!-- Collapsable Card Example -->
+    <div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+            <h6 class="m-0 font-weight-bold text-primary">Choose request</h6>
+        </a>
+        <!-- Card Content - Collapse -->
+        <div class="collapse show" id="collapseCardExample">
+            <div class="card-body">
+                <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Project ID</th>
+                      <th>Soft skills required</th>
+                      <th>Hard skills required</th>
+                      <th>Already satisfied?</th>
+                      <th>Watch</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for required_skill in skills_requirement %}
+                    <tr>
+                      <td>{{ skills_requirement[required_skill][0] }}</td>
+                      <td>{{ skills_requirement[required_skill][1] }}</td>
+                      <td>{{ skills_requirement[required_skill][2] }}</td>
+                      <td>False</td>
+                      <td><a onclick="showProject({{ required_skill }})" href="#{{ skills_requirement[required_skill][0] }}"><i class="far fa-eye"></i></a></td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+    </div>
 
+<!-- Basic Card Example -->
+    {% for required_skill in skills_requirement %}
+     <div class="card shadow mb-4" style="display: none" id="{{ required_skill }}">
+         <div class="card-header py-3">
+             <h6 class="m-0 font-weight-bold text-primary">Requests for project #{{ required_skill }}</h6>
+         </div>
+         <div class="card-body">
+             <div class="table-responsive">
+                <table class="table table-bordered" id="project{{ required_skill }}" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Project ID</th>
+                      <th>Skill type</th>
+                      <th>Skill</th>
+                      <th>Experience required</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for request in requests %}
+                    {% if request.id_project == required_skill and all_skills.get(request.skill).soft_hard == "Soft" %}
+                    <tr>
+                      <td>{{ request.id_project }}</td>
+                      <td>{{ all_skills.get(request.skill).soft_hard }}</td>
+                      <td>{{ request.skill }}</td>
+                      <td>{{ request.experience }}</td>
+                    </tr>
+                    {% endif %}
+                  {% endfor %}
+                  {% for request in requests %}
+                    {% if request.id_project == required_skill and all_skills.get(request.skill).soft_hard == "Hard" %}
+                    <tr>
+                      <td>{{ request.id_project }}</td>
+                      <td>{{ all_skills.get(request.skill).soft_hard }}</td>
+                      <td>{{ request.skill }}</td>
+                      <td>{{ request.experience }}</td>
+                    </tr>
+                    {% endif %}
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+      <div class="row">
+              <!-- =============================================================================================== -->
+              <!-- =============================================================================================== -->
+              <!-- =============================================== BEST ONE ====================================== -->
+              <!-- =============================================================================================== -->
+              <!-- =============================================================================================== -->
+                <div class="col-xl-3 col-lg-5">
+                    <div class="card shadow mb-4 pb-4">
+                    <!-- Card Header - Dropdown -->
+                        <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
+                          <h6 class="m-2 font-weight-bold text-primary">Profile picture</h6>
+                          <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                          </div>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                          <div class="-file-image">
+                            <img style="width: {% if user.hierarchy=="Employee" %}13.5{% else %}16{% endif %}vw;"
+                                 class="rounded-circle" id="{{user.id}}_photo" src="/static/employees_pictures/{{user.id}}.jpg"
+                                 onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+              <!-- =============================================================================================== -->
+              <!-- =============================================================================================== -->
+              <!-- ============================================== SECOND BEST ==================================== -->
+              <!-- =============================================================================================== -->
+              <!-- =============================================================================================== -->
+
+         </div>
+     </div>
+    {% endfor %}
 {% endblock %}

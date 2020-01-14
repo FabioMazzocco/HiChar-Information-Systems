@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block description %}Here you can add an employee who has just been hired{% endblock %}
+{% block title %}New employee{% endblock %}
+{% block user %}{{ user.name.upper() }}{% endblock %}
+{% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block additional_css_or_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<link href="static/css/select2.min.css" rel="stylesheet">
+<script src="static/js/select2.min.js"></script>
+<script>
+    window.onload = function(){
+        $("#submitButtonHard").prop("disabled", true)
+        $("#submitButtonSoft").prop("disabled", true)
+    }
+
+    $(document).ready(function(){
+        $("#formHard").select2()
+        $("#formSoft").select2()
+    })
+
+    function buttonsManagement(){
+        if ($("#employee").val()!=="" && $("#skill").val()!=="" && $("#time").val()!==""){
+            try{
+                let months = parseInt($("#time").val())
+                $("#time").val(months)
+                $("#submitButtonHard").prop("disabled", false)
+            }catch(error) {
+                alert("The number of months must be an integer number")
+                $("#submitButtonHard").prop("disabled", true)
+            }
+        }
+        else{
+            $("#submitButtonHard").prop("disabled", true)
+        }
+    }
+
+    function buttonsManagement1(){
+        if ($("#employee1").val()!=="" && $("#skill1").val()!=="" && $("#time1").val()!==""){
+            try{
+                let months = parseInt($("#time1").val())
+                $("#time1").val(months)
+                $("#submitButtonSoft").prop("disabled", false)
+            }catch(error) {
+                alert("The number of months must be an integer number")
+                $("#submitButtonSoft").prop("disabled", true)
+            }
+        }
+        else{
+            $("#submitButtonSoft").prop("disabled", true)
+        }
+    }
+</script>
+{% endblock %}
+
+{% block pageContent %}
+<h2>Add hard skills</h2>
+<form id="formHard" method="post" action="/add_skills_result">
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="employee">Employee</label>
+        <select onchange="buttonsManagement()" type="text" id="employee" class="js-example-basic-single form-control" name="employee" placeholder="Employee" required>
+            {% for employee in personnel %}
+                <option value="{{ employee.id }} - {{ employee.surname }} {{ employee.name }}">
+                {{ employee.id }} - {{ employee.surname }} {{ employee.name }}
+                </option>
+            {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="skill">Hard skill</label>
+        <select onchange="buttonsManagement()" type="text" id="skill" class="form-control" name="skill" placeholder="Skill" required>
+            {% for category in categories %}
+                <optgroup label="{{ category }}">
+                {% for skill in skills %}
+                    {% if skill.soft_hard == "Hard" and skill.category == category %}
+                    <option name="{{ skill.name }}">{{ skill.name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+            {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+          <label for="time">Time</label>
+          <div class="input-group">
+              <input onchange="buttonsManagement()" class="form-control" id="time" name="time" placeholder="time in months" required>
+          </div>
+      </div>
+  </div>
+
+  <button id="submitButtonHard" style="float: right" type="submit" class="btn btn-success btn-icon-split" disabled>
+      <span class="icon text-white-50">
+        <i class="fas fa-check"></i>
+      </span>
+      <span class="text">Add hard skill</span>
+  </button>
+</form><hr><br>
+
+<h2>Add soft skills</h2>
+<form id="formSoft" method="post" action="/add_skills_result">
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="employee1">Employee</label>
+        <select onchange="buttonsManagement1()" type="text" id="employe1e" class="form-control" name="employee" placeholder="Employee" required>
+            {% for employee in personnel %}
+                <option value="{{ employee.id }} - {{ employee.surname }} {{ employee.name }}">
+                {{ employee.id }} - {{ employee.surname }} {{ employee.name }}
+                </option>
+            {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="skill1">Soft skill</label>
+        <select onchange="buttonsManagement1()" type="text" id="skill1" class="form-control" name="skill" placeholder="Skill" required>
+            {% for category in categories %}
+                <optgroup label="{{ category }}">
+                {% for skill in skills %}
+                    {% if skill.soft_hard == "Soft" and skill.category == category %}
+                    <option name="{{ skill.name }}">{{ skill.name }}</option>
+                    {% endif %}
+                {% endfor %}
+                </optgroup>
+            {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+          <label for="time1">Time</label>
+          <div class="input-group">
+              <input onchange="buttonsManagement1()" class="form-control" id="time1" name="time" placeholder="time in months" required>
+          </div>
+      </div>
+  </div>
+
+  <button id="submitButtonSoft" style="float: right" type="submit" class="btn btn-success btn-icon-split" disabled>
+      <span class="icon text-white-50">
+        <i class="fas fa-check"></i>
+      </span>
+      <span class="text">Add soft skill</span>
+  </button>
+</form><hr>
+{% endblock %}

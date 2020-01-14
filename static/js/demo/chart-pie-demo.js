@@ -1,8 +1,8 @@
-function create(chartName, valuesName, values, boolLegend) {
+function createDoughnut(chartName, valuesName, values, boolLegend) {
   Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
   Chart.defaults.global.defaultFontColor = '#858796';
 
-// Pie Chart Example
+  // Pie Chart Example
   let ctx = document.getElementById(chartName);
   let myPieChart = new Chart(ctx, {
     type: 'doughnut',
@@ -29,7 +29,9 @@ function create(chartName, valuesName, values, boolLegend) {
       },
       legend: {
         display: boolLegend,
-        position: 'bottom'
+        position: "bottom",
+        align: "center",
+        padding: 20
       },
       cutoutPercentage: 80,
     },

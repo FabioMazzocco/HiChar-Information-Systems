@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block description %}Here you can add an employee who has just been hired{% endblock %}
+{% block title %}New employee{% endblock %}
+{% block user %}{{ user.name.upper() }}{% endblock %}
+{% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block additional_css_or_js %}
+<style>
+    .correct {
+        border: 1px solid green;
+    }
+
+    .wrong {
+        border: 1px solid red;
+    }
+</style>
+<script>
+    function addEmployeeEnabledDisabled() {
+        if($("#submitButton").prop("disabled")==true)
+            $("#submitButton").prop("disabled", false)
+        else
+            $("#submitButton").prop("disabled", true)
+
+    }
+    function projectAssignment() {
+        if($("#newEmployeeAssigned").val()==1){
+            $("#newEmployeeProjectID").prop("disabled", false)
+            $("#newEmployeeRole").prop("disabled", false)
+        }
+        else{
+            $("#newEmployeeProjectID").prop("disabled", true)
+            $("#newEmployeeRole").prop("disabled", true)
+        }
+    }
+
+    function email(element) {
+        if ($(element).val().includes(".")) {
+            $(element).addClass("correct")
+        } else {
+            $(element).addClass("wrong")
+        }
+    }
+
+    function color(element){
+        if ($(element).val()!=""){
+            $(element).addClass("correct")
+        }
+        else{
+            $(element).removeClass("correct")
+        }
+    }
+    
+    function hierarchy(element) {
+        let val = element.value
+        for(let el in ["Employee", "HR-Human resources", "PM-Project manager", "Manager"])
+            if(el===val) {
+                $(element).add("correct")
+                break;
+            }
+        else
+            $(element).addClass("wrong")
+
+    }
+
+
+</script>
+{% endblock %}
+
+{% block pageContent %}
+<form id="form" method="post" action="/result">
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="newEmployeeName">Name</label>
+        <input onchange="color(this)" type="text" class="form-control" name="newEmployeeName" placeholder="Name (+ Middle names)" required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="newEmployeeSurname">Surname</label>
+        <input onchange="color(this)" type="text" class="form-control" name="newEmployeeSurname" placeholder="Surname" required>
+      </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="newEmployeeUsername">Username</label>
+      <div class="input-group">
+          <input onchange="color(this)" style="text-align: right" class="form-control" name="newEmployeeUsername" placeholder="username" required>
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <label for="newEmployeeEmail">Email domain</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text">@</div>
+        </div>
+        <input onchange="email(this)" class="form-control" name="newEmployeeEmail" placeholder="studenti.polito.it" required>
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="newEmployeePassword">Password</label>
+      <input type="password" class="form-control" name="newEmployeePassword" placeholder="Password" required>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="newEmployeeID">ID</label>
+      <input type="number" maxlength="6" minlength="6" class="form-control" name="newEmployeeID" placeholder="6 digits ID" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="newEmployeeHierarchy">Hierarchy</label>
+      <select onchange="hierarchy(this)" name="newEmployeeHierarchy" class="form-control" required>
+        <option name="Employee" selected>Employee</option>
+        <option name="HR">HR - Human resources</option>
+        <option name="PM">PM - Project manager</option>
+        <option name="Manager">Manager</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+      <div class="form-group col-md-2">
+          <label for="newEmployeeBirthday">Birthday</label>
+          <input type="date" class="form-control" name="newEmployeeBirthday" placeholder="mm/dd/yyyy" value="01/01/1990" required>
+      </div>
+      <div class="form-group col-md-2">
+          <label for="newEmployeeHiringDate">Hiring date</label>
+          <input type="date" class="form-control" name="newEmployeeHiringDate" placeholder="mm/dd/yyyy" required>
+      </div>
+      <div class="form-group col-md-2">
+          <label for="newEmployeeAssigned">Assigned to project?</label>
+          <select style="text-align: center" onchange="projectAssignment()" name="newEmployeeAssigned" class="form-control" required>
+            <option value="0" name="0" selected>No</option>
+            <option value="1" name="1">Yes</option>
+          </select>
+      </div>
+      <div class="form-group col-md-3">
+          <label for="newEmployeeProjectID">Project</label>
+          <select style="text-align: center" name="newEmployeeProjectID" class="form-control" disabled>
+            <option value="-1" name="no_selection" selected></option>
+            {% for project in projects %}
+            <option value="{{ project.id }}" name="{{ project.id }}">{{project.id}} - {{ project.name }}</option>
+            {% endfor %}
+          </select>
+      </div>
+      <div class="form-group col-md-3">
+          <label for="newEmployeeRole">Role</label>
+          <select style="text-align: center" name="newEmployeeRole" class="form-control" disabled>
+            <option value="-1" name="no_selection" selected></option>
+            {% for role in roles %}
+            <option value="{{ role.role }}" name="{{ project.role }}">{{project.role}}</option>
+            {% endfor %}
+          </select>
+      </div>
+  </div>
+  <div style="float: right" class="form-group">
+    <div class="form-check">
+      <input onchange="addEmployeeEnabledDisabled()" class="form-check-input" type="checkbox" id="gridCheck">
+      <label class="form-check-label" for="gridCheck">
+        I really want to add this employee to the personnel
+      </label>
+    </div>
+  </div><br><br>
+  <button id="submitButton" style="float: right" type="submit" class="btn btn-success btn-icon-split" disabled>
+      <span class="icon text-white-50">
+        <i class="fas fa-check"></i>
+      </span>
+      <span class="text">Add employee</span>
+  </button>
+</form>
+{% endblock %}

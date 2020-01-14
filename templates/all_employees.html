@@ -31,18 +31,20 @@
                       <th>Hierarchy</th>
                       <th>Status</th>
                       <th>Project</th>
+                      <th>Profile</th>
                     </tr>
                   </thead>
                   <tbody>
                   {% for person in personnel %}
                     <tr>
-                      <th>{{person.surname}}</th>
-                      <th>{{person.name}}</th>
+                      <td>{{person.surname}}</td>
+                      <td>{{person.name}}</td>
                       <!-- CHANGE HERE, DOES NOT WORK WITH ANY DATE -->
-                      <th>{{((now-person.date_of_birth).days / 365.25)| int}}</th>
-                      <th>{{person.hierarchy}}</th>
-                      <th>{% if person.assigned_to_project==True %}Assigned to project{% else %}Free{% endif %}</th>
-                      <th>{% if person.assigned_to_project==True %}#{{person.project_id}}{% endif %}</th>
+                      <td>{{((utilities[0]-person.date_of_birth).days / 365.25)| int}}</td>
+                      <td>{{person.hierarchy}}</td>
+                      <td>{% if person.assigned_to_project==True %}Assigned to project{% else %}Free{% endif %}</td>
+                      <td>{% if person.assigned_to_project==True %}#{{person.project_id}}{% endif %}</td>
+                      <td><a href="/{{ person.id }}"><i class="far fa-eye"></i></a></td>
                     </tr>
                   {% endfor %}
                   </tbody>

@@ -4,6 +4,7 @@
 {% block title %}Managers{% endblock %}
 {% block user %}{{ user.name.upper() }}{% endblock %}
 {% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block year %}{{ utilities[0].year }}{% endblock %}
 {% block additional_css_or_js %}
     <!-- Custom styles for this page -->
   <link href="../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -30,18 +31,20 @@
                       <th>Age</th>
                       <th>Hierarchy</th>
                       <th>Years of experience</th>
+                      <th>Profile</th>
                     </tr>
                   </thead>
                   <tbody>
                   {% for person in personnel %}
                     <tr>
-                      <th>{{person.surname}}</th>
-                      <th>{{person.name}}</th>
+                      <td>{{person.surname}}</td>
+                      <td>{{person.name}}</td>
                       <!-- CHANGE HERE, DOES NOT WORK WITH ANY DATE -->
-                      <th>{{2020 - person.date_of_birth.year}}</th>
-                      <th>{{person.hierarchy}}</th>
+                      <td>{{((utilities[0]-person.date_of_birth).days / 365.25)| int}}</td>
+                      <td>{{person.hierarchy}}</td>
                       <!-- CHANGE HERE, DOES NOT WORK WITH ANY DATE -->
-                      <th>{{2020 - person.date_of_hiring.year}}</th>
+                      <td>{{2020 - person.date_of_hiring.year}}</td>
+                      <td><a href="/{{ person.id }}"><i class="far fa-eye"></i></a></td>
                     </tr>
                   {% endfor %}
                   </tbody>

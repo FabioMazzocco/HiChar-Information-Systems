@@ -4,11 +4,29 @@
 {% block title %}Profile{% endblock %}
 {% block user %}{{ user.name.upper() }}{% endblock %}
 {% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block year %}{{ utilities[0].year }}{% endblock %}
 {% block additional_css_or_js   %}
 <script src="/static/js/demo/chart-pie-demo.js"></script>
 <script>
 window.onload = function(){
-    create("pieChartSkills", ["Soft", "Hard"], [55,44])
+    let soft = []
+    {% for skill in skills["Soft"] %}
+    soft.push("{{ skill.name }}");
+    {% endfor %}
+    soft = soft.length
+    let hard = []
+    {% for skill in skills["Hard"] %}
+    hard.push("{{ skill.name }}");
+    {% endfor %}
+    hard = hard.length
+    let total = soft + hard;
+    if(soft+hard == 0){
+        soft = 50;
+        hard = 50;
+        total = soft+hard;
+    }
+    //createDoughnut("pieChartSkills", ["Soft", "Hard"], [Math.round((soft/total)*100),Math.round((hard/total)*100)])
+    createDoughnut("pieChartSkills", ["Soft", "Hard"], [soft, hard])
 }
 </script>
 {% endblock%}
@@ -18,7 +36,9 @@ window.onload = function(){
 <!-- HEADING -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">My profile</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="sorry()">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+        </a>
     </div>
 
     <div class="row">
@@ -28,6 +48,7 @@ window.onload = function(){
             <!-- Card Header - Dropdown -->
                 <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-2 font-weight-bold text-primary">Profile picture</h6>
+                  {% if user.id == profile.id %}
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -36,15 +57,17 @@ window.onload = function(){
                       <div class="dropdown-header">Actions:</div>
                       <a class="dropdown-item" href="#">Change profile photo</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Download profile photo</a>
+                      <a class="dropdown-item" href="/static/employees_pictures/{{profile.id}}.jpg" download>
+                          Download profile photo</a>
                     </div>
                   </div>
+                  {% endif %}
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="-file-image">
-                    <img style="width: {% if user.hierarchy=="Employee" %}13.5{% else %}16{% endif %}vw;"
-                         class="rounded-circle" id="{{user.id}}_photo" src="/static/employees_pictures/{{user.id}}.jpg"
+                    <img style="width: {% if profile.hierarchy=="Employee" %}13.5{% else %}16{% endif %}vw;"
+                         class="rounded-circle" id="{{profile.id}}_photo" src="/static/employees_pictures/{{profile.id}}.jpg"
                          onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
                   </div>
                 </div>
@@ -59,22 +82,22 @@ window.onload = function(){
                 </div>
                 <div class="card-body">
                     <table>
-                        <tr><td width="40%">ID: </td><td>{{ user.id }}</tr>
-                        <tr><td>NAME: </td><td>{{ user.name }}</td></tr>
-                        <tr><td>SURNAME: </td><td>{{ user.surname }}</td></tr>
-                        <tr><td>Birthday: </td><td>{{ user.date_of_birth.date() }}</td></tr>
-                        <tr><td>Email: </td><td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td></tr>
-                        <tr><td>Hiring date: </td><td>{{ user.date_of_hiring.date() }}</td></tr>
-                        <tr><td>Job: </td><td>{% if user.hierarchy!="PM" %}{{ user.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
+                        <tr><td width="40%">ID: </td><td>{{ profile.id }}</tr>
+                        <tr><td>NAME: </td><td>{{ profile.name }}</td></tr>
+                        <tr><td>SURNAME: </td><td>{{ profile.surname }}</td></tr>
+                        <tr><td>Birthday: </td><td>{{ profile.date_of_birth.date() }}</td></tr>
+                        <tr><td>Email: </td><td><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></td></tr>
+                        <tr><td>Hiring date: </td><td>{{ profile.date_of_hiring.date() }}</td></tr>
+                        <tr><td>Job: </td><td>{% if profile.hierarchy!="PM" %}{{ profile.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
                         <tr><td>Status: </td><td>
-                                            {% if user.hierarchy == "Manager" %}Active{% else %}
-                                                {% if user.assigned_to_project==False %}Free
+                                            {% if profile.hierarchy == "Manager" %}Active{% else %}
+                                                {% if profile.assigned_to_project==False %}Free
                                                 {% else %}Assigned to project{% endif %}
                                             {% endif %}
                                             </td></tr>
-                        {% if user.assigned_to_project==True %}
-                        <tr><td>Project id: </td><td>{{ user.project_id }}</td></tr>
-                        <tr><td>Role: </td><td>{{ user.role }}</td></tr>
+                        {% if profile.assigned_to_project==True %}
+                        <tr><td>Project id: </td><td>{{ profile.project_id }}</td></tr>
+                        <tr><td>Role: </td><td>{{ profile.role }}</td></tr>
                         {% endif %}
                     </table>
                 </div>
@@ -97,7 +120,7 @@ window.onload = function(){
                     <canvas id="pieChartSkills"></canvas>
                   </div>
                   <hr>
-                  Number of share of soft and hard skills with respect to the total skills
+                    <span style="font-size: 80%">Number of share of soft and hard skills with respect to the total skills</span>
                 </div>
               </div>
             </div>
@@ -110,22 +133,22 @@ window.onload = function(){
                 </div>
                 <div class="card-body">
                     <table>
-                        <tr><td width="40%">ID: </td><td>{{ user.id }}</tr>
-                        <tr><td>NAME: </td><td>{{ user.name }}</td></tr>
-                        <tr><td>SURNAME: </td><td>{{ user.surname }}</td></tr>
-                        <tr><td>Birthday: </td><td>{{ user.date_of_birth.date() }}</td></tr>
-                        <tr><td>Email: </td><td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td></tr>
-                        <tr><td>Hiring date: </td><td>{{ user.date_of_hiring.date() }}</td></tr>
-                        <tr><td>Job: </td><td>{% if user.hierarchy!="PM" %}{{ user.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
+                        <tr><td width="40%">ID: </td><td>{{ profile.id }}</tr>
+                        <tr><td>NAME: </td><td>{{ profile.name }}</td></tr>
+                        <tr><td>SURNAME: </td><td>{{ profile.surname }}</td></tr>
+                        <tr><td>Birthday: </td><td>{{ profile.date_of_birth.date() }}</td></tr>
+                        <tr><td>Email: </td><td><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></td></tr>
+                        <tr><td>Hiring date: </td><td>{{ profile.date_of_hiring.date() }}</td></tr>
+                        <tr><td>Job: </td><td>{% if profile.hierarchy!="PM" %}{{ profile.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
                         <tr><td>Status: </td><td>
-                                            {% if user.hierarchy == "Manager" %}Active{% else %}
-                                                {% if user.assigned_to_project==False %}Free
+                                            {% if profile.hierarchy == "Manager" %}Active{% else %}
+                                                {% if profile.assigned_to_project==False %}Free
                                                 {% else %}Assigned to project{% endif %}
                                             {% endif %}
                                             </td></tr>
-                        {% if user.assigned_to_project==True %}
-                        <tr><td>Project id: </td><td>{{ user.project_id }}</td></tr>
-                        <tr><td>Role: </td><td>{{ user.role }}</td></tr>
+                        {% if profile.assigned_to_project==True %}
+                        <tr><td>Project id: </td><td>{{ profile.project_id }}</td></tr>
+                        <tr><td>Role: </td><td>{{ profile.role }}</td></tr>
                         {% endif %}
                     </table>
                 </div>
