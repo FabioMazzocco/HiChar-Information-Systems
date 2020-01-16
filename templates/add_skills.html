@@ -69,10 +69,10 @@
       <div class="form-group col-md-3">
         <label for="skill">Hard skill</label>
         <select onchange="buttonsManagement()" type="text" id="skill" class="form-control" name="skill" placeholder="Skill" required>
-            {% for category in categories %}
+            {% for category in hardSkills %}
                 <optgroup label="{{ category }}">
-                {% for skill in skills %}
-                    {% if skill.soft_hard == "Hard" and skill.category == category %}
+                {% for skill in hardSkills[category] %}
+                    {% if skill.soft_hard == "Hard" %}
                     <option name="{{ skill.name }}">{{ skill.name }}</option>
                     {% endif %}
                 {% endfor %}
@@ -112,10 +112,10 @@
       <div class="form-group col-md-3">
         <label for="skill1">Soft skill</label>
         <select onchange="buttonsManagement1()" type="text" id="skill1" class="form-control" name="skill" placeholder="Skill" required>
-            {% for category in categories %}
+            {% for category in softSkills %}
                 <optgroup label="{{ category }}">
-                {% for skill in skills %}
-                    {% if skill.soft_hard == "Soft" and skill.category == category %}
+                {% for skill in softSkills[category] %}
+                    {% if skill.soft_hard == "Soft" %}
                     <option name="{{ skill.name }}">{{ skill.name }}</option>
                     {% endif %}
                 {% endfor %}

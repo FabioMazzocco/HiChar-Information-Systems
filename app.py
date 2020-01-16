@@ -122,10 +122,15 @@ skillsDict.clear()
 for skill in Skills.query.all():
     skillsDict[skill.name] = skill
 
+# Projects loading to cut the number of Server-DB connections (there is no problem of security)
+projectsDict = {}
+for project in Projects.query.all():
+    projectsDict[project.id] = project
+
 
 @app.route('/', methods=["get", "post"])
 def index():
-    global logged_users
+    global logged_users, projectsDict
     if 'id' in session and session['id'] in logged_users:
         return render_template("index.html", user=logged_users.get(session['id']), utilities=utilities())
     if request.method == 'POST':
@@ -142,6 +147,7 @@ def index():
             return redirect("/login", code=302)
         session['id'] = employee.id
         logged_users[employee.id] = employee
+        print all_projects
         return render_template("index.html", user=employee, utilities=utilities())
     return redirect("/login", code=302)
 
@@ -177,38 +183,6 @@ def logout():
     # Removes the session
     session.pop('id', None)
     return redirect('/login', code=302)
-
-
-@app.route('/requests')
-def requests():
-    global logged_users, skillsDict
-    if 'id' not in session or logged_users.get(session['id']) is None:
-        return redirect('/login', code=302)
-    logged_user = logged_users.get(session['id'])
-    the_requests = RequestsProjects.query.order_by("id_project").filter_by(satisfied=False).all()
-    required_skills = {}
-    for this_request in the_requests:
-        if this_request.id_project not in required_skills:
-            required_skills[this_request.id_project] = [this_request.id_project, 0, 0]
-        the_skill = skillsDict.get(this_request.skill)
-        if the_skill is None:
-            print "skill not found: " + this_request.skill
-            continue
-        if the_skill.soft_hard == "Soft":
-            required_skills[this_request.id_project][1] += 1
-        else:
-            required_skills[this_request.id_project][2] += 1
-    everything_needed = {}
-    for required_skill in required_skills:
-        everything_needed[required_skill] = findBestThreeForProjectsRequests(required_skill)
-    if logged_user.hierarchy == "PM":
-        return render_template("request_for_personnel.html", user=logged_user, utilities=utilities(),
-                               requests=the_requests, skills_requirement=required_skills)
-    elif logged_user.hierarchy == "HR":
-        return render_template("HR_request_for_personnel.html", user=logged_user, utilities=utilities(),
-                               requests=the_requests,  skills_requirement=required_skills, all_skills=skillsDict)
-    else:
-        return redirect("/", code=302)
 
 
 @app.route('/all')
@@ -257,8 +231,8 @@ def profile():
     if 'id' not in session or logged_users.get(session['id']) is None:
         return redirect('/login', code=302)
     logged_user = logged_users.get(session['id'])
-    return render_template('profile.html', user=logged_user, profile=logged_user, utilities=utilities(),
-                           skills=getSkills(logged_user))
+    return render_template('profile.html', user=logged_user, profile=logged_user,
+                           utilities=utilitiesPlus(logged_user.id), skills=getSkills(logged_user))
 
 
 @app.route('/new_employee')
@@ -356,9 +330,20 @@ def add_skills():
             break
     skills_list = Skills.query.order_by("name").all()
     categories_list = getCategories()
+    hard_skills = {}
+    soft_skills = {}
+    for the_skill in skills_list:
+        if the_skill.soft_hard == "Soft":
+            if the_skill.getCategory() not in soft_skills:
+                soft_skills[the_skill.getCategory()] = []
+            soft_skills[the_skill.getCategory()].append(the_skill)
+        else:
+            if the_skill.getCategory() not in hard_skills:
+                hard_skills[the_skill.getCategory()] = []
+            hard_skills[the_skill.getCategory()].append(the_skill)
     if logged_user.hierarchy == "HR":
         return render_template('add_skills.html', user=logged_user, utilities=utilities(), personnel=personnel_list,
-                               skills=skills_list, categories=categories_list)
+                               softSkills=soft_skills, hardSkills=hard_skills)
     else:
         return redirect('/', code=302)
 
@@ -370,7 +355,7 @@ def add_skills_result():
         return redirect('/login', code=302)
     logged_user = logged_users.get(session['id'])
     if logged_user.hierarchy != "HR":
-        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+        return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=0,
                                error_message="You were not qualified to add skills to an employee")
     # If there is something missing --> cannot add new employee --> message error
     missing = []
@@ -379,36 +364,36 @@ def add_skills_result():
             missing.append(campo.lower())
     if len(missing) > 0:
         message = "Sorry, you missed some input fields:\n" + missing.__str__()
-        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+        return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=0,
                                error_message=message)
-    print request.form
+    # print request.form
     employee = EmployeesTable.query.filter_by(id=request.form["employee"].split(" - ")[0]).first()
     if employee is None:
-        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+        return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=0,
                                error_message="The selected employee does not exist")
     the_skill = Skills.query.filter_by(name=request.form["skill"]).first()
     if the_skill is None:
-        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+        return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=0,
                                error_message="The selected skill does not exist")
     for person_skill in PersonnelSkills.query.filter_by(id=employee.id).all():
         if person_skill.skill_name == the_skill.name:
-            return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+            return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=0,
                                    error_message="The selected skill (" + the_skill.name +
                                    ") was already assigned to the employee (" + employee.surname + ", " +
                                    employee.name + ")")
     the_time = request.form.get("time")
     if the_time is None:
-        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+        return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=0,
                                 error_message="You need to insert a valid ampunt of time in months (integer)")
     try:
         the_time = int(the_time)
     except:
-        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+        return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=0,
                                error_message="You need to insert a valid ampunt of time in months (integer)")
     personnel_skill = PersonnelSkills(id=employee.id, skill_name=the_skill.name, time=the_time)
     db.session.add(personnel_skill)
     db.session.commit()
-    return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=1,
+    return render_template('add_skills_result.html', user=logged_user, utilities=utilities(), success=1,
                            error_message="")
 
 
@@ -452,6 +437,116 @@ def course(course_id):
     return render_template("404.html", user=logged_user, utilities=utilities(), message=the_message)
 
 
+@app.route('/requests')
+def requests():
+    global logged_users, skillsDict
+    if 'id' not in session or logged_users.get(session['id']) is None:
+        return redirect('/login', code=302)
+    logged_user = logged_users.get(session['id'])
+    the_requests = RequestsProjects.query.order_by("id_project").filter_by(satisfied=False).all()
+    required_skills = {}
+    for this_request in the_requests:
+        if this_request.id_project not in required_skills:
+            required_skills[this_request.id_project] = [this_request.id_project, 0, 0]
+        the_skill = skillsDict.get(this_request.skill)
+        if the_skill is None:
+            print "skill not found: " + this_request.skill
+            continue
+        if the_skill.soft_hard == "Soft":
+            required_skills[this_request.id_project][1] += 1
+        else:
+            required_skills[this_request.id_project][2] += 1
+    everything_needed = {}
+    for required_skill in required_skills:
+        everything_needed[required_skill] = findBestThreeForProjectsRequests(required_skill)
+    if logged_user.hierarchy == "PM":
+        return render_template("request_for_personnel.html", user=logged_user, utilities=utilities(),
+                               requests=the_requests, all_skills=skillsDict)
+    elif logged_user.hierarchy == "HR":
+        return render_template("HR_request_for_personnel.html", user=logged_user, utilities=utilities(),
+                               requests=the_requests,  skills_requirement=required_skills, all_skills=skillsDict,
+                               everything=everything_needed)
+    else:
+        return redirect("/", code=302)
+
+
+@app.route('/allocate', methods=["post"])
+def allocate():
+    global logged_users
+    if 'id' not in session or logged_users.get(session['id']) is None:
+        return redirect('/login', code=302)
+    logged_user = logged_users.get(session['id'])
+    if logged_user.hierarchy != "HR":
+        return redirect("/", code=302)
+    the_requests = RequestsProjects.query.order_by("id_project").filter_by(satisfied=False).all()
+    project = request.form.get("project_id")
+    employee = request.form.get("employee_id")
+    message = ""
+    if project is None:
+        message = "Ops, something went wrong, no project was selected"
+        return render_template("allocate.html", user=logged_user, utilities=utilities(), success=0,
+                               error_message=message)
+    elif employee is None:
+        message = "Ops, something went wrong, no employee was selected"
+        return render_template("allocate.html", user=logged_user, utilities=utilities(), success=0,
+                               error_message=message)
+    the_success = 0
+    project = int(project)
+    employee = int(employee)
+    for this_request in the_requests:
+        if this_request.id_project == project:
+            the_success = 1
+            break
+    if the_success == 0:
+        message = "Sorry, the selected project does not require a new employee"
+        return render_template("allocate.html", user=logged_user, utilities=utilities(), success=0,
+                               error_message=message)
+    employee = EmployeesTable.query.filter_by(id=employee).first()
+    employee.assigned_to_project = True
+    employee.project_id = project
+    for this_request in RequestsProjects.query.filter_by(id_project=project).all():
+        for this_skill in PersonnelSkills.query.filter_by(id=employee.id):
+            if this_request.skill == this_skill.skill_name:
+                this_request.satisfied = True
+    db.session.commit()
+    return render_template("allocate.html", user=logged_user, utilities=utilities(), success=1,
+                           error_message="")
+
+
+@app.route('/new_request_result', methods=["post"])
+def new_request_result():
+    global logged_users
+    if 'id' not in session or logged_users.get(session['id']) is None:
+        return redirect('/login', code=302)
+    logged_user = logged_users.get(session['id'])
+    if logged_user.hierarchy != "PM":
+        return redirect("/", code=302)
+    the_skill = request.form.get("skillSelection")
+    if the_skill is None:
+        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+                               error_message="No skill was selected")
+    the_skill = skillsDict.get(the_skill)
+    if the_skill is None:
+        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+                               error_message="The selected skill does not exist")
+    the_project = logged_user.project_id
+    if len(RequestsProjects.query.filter_by(id_project=the_project, skill=the_skill.name).all()) != 0:
+        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+                               error_message="The selected skill has already been requested")
+    the_time = request.form.get("time")
+    if the_time is None:
+        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+                               error_message="The number of months of experience is mandatory")
+    try:
+        the_time = int(the_time)
+    except:
+        return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=0,
+                               error_message="The number of months of experience must be an integer")
+    db.session.add(RequestsProjects(id_project=the_project, skill=the_skill.name, experience=the_time))
+    db.session.commit()
+    return render_template('new_employee_result.html', user=logged_user, utilities=utilities(), success=1,
+                           error_message="")
+
 # This route treat every case except the login and the index(home)
 @app.route('/<string:pagename>', methods=['get', 'post'])
 def user_dashboard(pagename):
@@ -470,8 +565,8 @@ def user_dashboard(pagename):
             break
         if pagename == employee.id:
             if logged_user.hierarchy != "Employee":
-                return render_template("profile.html", user=logged_user, profile=employee, utilities=utilities(),
-                                       skills=getSkills(employee))
+                return render_template("profile.html", user=logged_user, profile=employee,
+                                       utilities=utilitiesPlus(employee.id), skills=getSkills(employee))
 
     try:
         return render_template("" + pagename + ".html", user=logged_user, utilities=utilities())
@@ -524,7 +619,42 @@ def utilities():
     expertCoursesNumber = len(Courses.query.filter_by(level="Expert").all())
     allCoursesNumber = beginnerCoursesNumber + intermediateCoursesNumber + expertCoursesNumber
     coursesType = [beginnerCoursesNumber, intermediateCoursesNumber, expertCoursesNumber, allCoursesNumber]
-    useful = [now, employeesNumber, skillsNumber, projectNumber, coursesType]
+    the_projects = []
+    for the_request in RequestsProjects.query.all():
+        present = False
+        for this_project in the_projects:
+            if this_project["name"] == projectsDict.get(the_request.id_project).name:
+                present = True
+                break
+        if not present:
+            the_projects.append({"name": projectsDict.get(the_request.id_project).name,
+                                 "satisfied": 0,
+                                 "total": 0})
+        for this_project in the_projects:
+            if this_project["name"] == projectsDict.get(the_request.id_project).name:
+                this_project["total"] += 1
+                if the_request.satisfied:
+                    this_project["satisfied"] += 1
+    useful = [now, employeesNumber, skillsNumber, projectNumber, coursesType, the_projects]
+    return useful
+
+
+def utilitiesPlus(employee_id):
+    global skillsDict
+    useful = utilities()
+    hard_skills = []
+    soft_skills = []
+    time = {}
+    for skill_name in PersonnelSkills.query.filter_by(id=employee_id).all():
+        this_skill = skillsDict.get(skill_name.skill_name)
+        time[this_skill.name] = skill_name.time
+        if this_skill.soft_hard == "Soft":
+            soft_skills.append(this_skill)
+        else:
+            hard_skills.append(this_skill)
+    useful.append(soft_skills)
+    useful.append(hard_skills)
+    useful.append(time)
     return useful
 
 
@@ -556,9 +686,9 @@ def getCategories():
 def findBestThreeForProjectsRequests(project_id):
     global skillsDict
     requested_skills = []
-    for request in RequestsProjects.query.filter_by(id_project=project_id).all():
+    for request in RequestsProjects.query.filter_by(id_project=project_id, satisfied=False).all():
         requested_skills.append(skillsDict.get(request.skill))
-    free_employees = EmployeesTable.query.filter_by(assigned_to_project=0).all()
+    free_employees = EmployeesTable.query.filter_by(hierarchy="Employee", assigned_to_project=0).all()
     # List of dictionaries (first 3 positions)
     bests = [ {"employee": None, "score": 0, "hard": [], "soft": [], "skills_number": 0},
               {"employee": None, "score": 0, "hard": [], "soft": [], "skills_number": 0},
@@ -566,14 +696,14 @@ def findBestThreeForProjectsRequests(project_id):
     for employee in free_employees:
         skills = PersonnelSkills.query.filter_by(id=employee.id).all()
         score = 0
-        # Algorithm: 2*boolean_have_the__hard_skill_or_not + 0.1*months_of_experience_with_the_skill +
+        # Algorithm: 1*boolean_have_the__hard_skill_or_not + 0.02*months_of_experience_with_the_skill +
         #              1*boolean_have_the__soft_skill_or_not
         this_employee = {"employee": employee, "score": 0, "hard": [], "soft": [], "skills_number": []}
         for the_skill in skills:
             for one_skill in requested_skills:
                 if the_skill.skill_name == one_skill.name:
                     if one_skill.soft_hard == "Hard":
-                        score += 1 + (0.01*the_skill.time)
+                        score += 1 + (0.02*the_skill.time)
                         this_employee["hard"].append(one_skill)
                     else:
                         score += 1
@@ -601,7 +731,7 @@ def findBestThreeForProjectsRequests(project_id):
             else:
                 order = case_even(bests[2], this_employee)
                 bests[2] = order[0]
-    print "BEST 3 for project " + str(project_id) + ": " + str(bests)
+    # print "BEST 3 for project " + str(project_id) + ": " + str(bests)
     return bests
 
 

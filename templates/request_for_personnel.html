@@ -1,11 +1,105 @@
 {% extends 'base.html' %}
-
-{% block description %}Here you can request for personnel for your project{% endblock %}
-{% block title %}Requests{% endblock %}
+{% block description %}Here you can add an employee who has just been hired{% endblock %}
+{% block title %}New employee{% endblock %}
 {% block user %}{{ user.name.upper() }}{% endblock %}
 {% block user_image %}{{ user.id }}.jpg{% endblock %}
-{% block year %}{{ utilities[0].year }}{% endblock %}
+{% block additional_css_or_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<link href="static/css/select2.min.css" rel="stylesheet">
+<script src="static/js/select2.min.js"></script>
+<script>
+    function acceptance(){
+        let checkBox = document.getElementById("declarationcheck");
+        if(checkBox.checked === true){
+            $("#declaration").css("display", "none");
+            $("#form").css("display", "block");
+        }
+    }
+
+    function addOptions(){
+        let type = $("#type").val();
+        if (type !== "None"){
+            let container = document.getElementById('skillSelection');
+            let option = document.createElement('option');
+            let dl = document.createElement('datalist');
+            dl.id = "all_skills";
+            if (type === "Soft"){
+                {% for this_skill in all_skills %}
+                    {% if all_skills[this_skill].soft_hard == "Soft" %}
+                        option = document.createElement('option');
+                        option.value = "{{ all_skills[this_skill].name }}";
+                        dl.appendChild(option);
+                    {% endif %}
+                {% endfor %}
+            }
+            if (type === "Hard") {
+                {% for this_skill in all_skills %}
+                    {% if all_skills[this_skill].soft_hard == "Hard" %}
+                        option = document.createElement('option');
+                        option.value = "{{ all_skills[this_skill].name }}";
+                        dl.appendChild(option);
+                    {% endif %}
+                {% endfor %}
+            }
+            container.appendChild(dl);
+        }
+    }
+
+    function check() {
+        if ($("#employee").val()!=="" && $("#skillSelection").val()!=="" && $("#time").val()!==""){
+            try{
+                let months = parseInt($("#time").val());
+                $("#time").val(months);
+                $("#submitButton").prop("disabled", false);
+            }catch(error) {
+                alert("The number of months must be an integer number");
+                $("#submitButton").prop("disabled", true);
+            }
+        }
+        else{
+            $("#submitButton").prop("disabled", true);
+        }
+    }
+
+</script>
+{% endblock %}
 
 {% block pageContent %}
+<h2>Add request for your project (project #{{ user.project_id }})</h2>
+<div id="declaration">
+    <hr>
+    <input onchange="acceptance()" type="checkbox" name="declarationcheck" id="declarationcheck" aria-checked="false">
+    I, {{ user.name }} {{ user.surname }}, declare that i have spoken to
+    the HR Department before sending a request for the allocation of a new employee to my project<br>
+</div>
+<form id="form" style="display: none" method="post" action="/new_request_result">
+  <hr>
+  <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="employee">Skills type</label>
+        <select onchange="addOptions()" type="text" id="type" class="js-example-basic-single form-control" name="type" required>
+                <option value="None"></option>
+                <option value="Soft">Soft</option>
+                <option value="Hard">Hard</option>
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="skill">Select skill</label>
+        <input class="form-control" list="all_skills" id="skillSelection" name="skillSelection" placeholder="Start typing..." required>
+      </div>
+      <div class="form-group col-md-3">
+          <label for="time">Time</label>
+          <div class="input-group">
+              <input onchange="check()" class="form-control" id="time" name="time" placeholder="time in months" required>
+          </div>
+      </div>
+  </div>
 
+  <button id="submitButton" style="float: right" type="submit" class="btn btn-success btn-icon-split" disabled>
+      <span class="icon text-white-50">
+        <i class="fas fa-check"></i>
+      </span>
+      <span class="text">Send request</span>
+  </button>
+</form><hr><br>
 {% endblock %}

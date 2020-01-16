@@ -64,8 +64,8 @@ window.onload = function(){
                   {% endif %}
                 </div>
                 <!-- Card Body -->
-                <div class="card-body">
-                  <div class="-file-image">
+                <div class="card-body h-100">
+                  <div {% if profile.assigned_to_project == True %}style="margin-bottom: 18px"{% endif %} class="-file-image">
                     <img style="width: {% if profile.hierarchy=="Employee" %}13.5{% else %}16{% endif %}vw;"
                          class="rounded-circle" id="{{profile.id}}_photo" src="/static/employees_pictures/{{profile.id}}.jpg"
                          onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
@@ -80,7 +80,7 @@ window.onload = function(){
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Basic information</h6>
                 </div>
-                <div class="card-body">
+                <div class="card-body h-100">
                     <table>
                         <tr><td width="40%">ID: </td><td>{{ profile.id }}</tr>
                         <tr><td>NAME: </td><td>{{ profile.name }}</td></tr>
@@ -131,7 +131,8 @@ window.onload = function(){
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Basic information</h6>
                 </div>
-                <div class="card-body">
+                <div class="card-body" {% if profile.assigned_to_project == False %}style="margin-bottom: 126px
+                                        {% else %}style="margin-bottom: 74px{% endif %}">
                     <table>
                         <tr><td width="40%">ID: </td><td>{{ profile.id }}</tr>
                         <tr><td>NAME: </td><td>{{ profile.name }}</td></tr>
@@ -151,6 +152,41 @@ window.onload = function(){
                         <tr><td>Role: </td><td>{{ profile.role }}</td></tr>
                         {% endif %}
                     </table>
+                </div>
+            </div>
+        </div>
+
+    <!-- SKILLS -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Skills</h6>
+                </div>
+                <div class="card-body" style="margin-bottom: 74px">
+                    <div class="container">
+                        <div class="row">
+                           <div class="col-sm">
+                               <h5 class="text-primary text-uppercase">Hard skills</h5><hr>
+                               <ul>
+                                   {% for skill in utilities[7] %}
+                                       {% if skill.soft_hard == "Hard" %}
+                                       <li>{{ skill.name }} - {{ utilities[8][skill.name] }} months</li>
+                                       {% endif %}
+                                   {% endfor %}
+                               </ul>
+                           </div>
+                           <div class="col-sm" >
+                                <h5 class="text-primary text-uppercase">Soft skills</h5><hr>
+                               <ul>
+                                   {% for skill in utilities[6] %}
+                                       {% if skill.soft_hard == "Soft" %}
+                                       <li>{{ skill.name }} - {{ utilities[8][skill.name] }} months</li>
+                                       {% endif %}
+                                   {% endfor %}
+                               </ul>
+                           </div>
+                        </div>
+                     </div>
                 </div>
             </div>
         </div>

@@ -9,10 +9,15 @@
 <script>
     function showProject(id){
         let limit = $('#dataTable tr').length;
-        for (let i=0; i<limit; i++){
-            $("#"+i).css("display", "none")
+       for (let i=0; i<limit; i++){
+            $("#projectCard"+i).css("display", "none")
         }
-        $("#"+id).css("display", "block")
+        $("#projectCard"+id).css("display", "block")
+    }
+    
+    function sendform(project, employee){
+         $("#project_" + project).val(project);
+         $("#employee_" + employee).val(employee);
     }
 
 </script>
@@ -59,7 +64,8 @@
 
 <!-- Basic Card Example -->
     {% for required_skill in skills_requirement %}
-     <div class="card shadow mb-4" style="display: none" id="{{ required_skill }}">
+    {% set project_id = required_skill %}
+     <div class="card shadow mb-4" style="display: none" id="projectCard{{ required_skill }}">
          <div class="card-header py-3">
              <h6 class="m-0 font-weight-bold text-primary">Requests for project #{{ required_skill }}</h6>
          </div>
@@ -97,41 +103,161 @@
                   {% endfor %}
                   </tbody>
                 </table>
-              </div>
+              </div><br>
       <div class="row">
               <!-- =============================================================================================== -->
               <!-- =============================================================================================== -->
               <!-- =============================================== BEST ONE ====================================== -->
               <!-- =============================================================================================== -->
               <!-- =============================================================================================== -->
+                <span style="padding-right: 30px"></span>
                 <div class="col-xl-3 col-lg-5">
-                    <div class="card shadow mb-4 pb-4">
+                    {% set option = everything[project_id][0]  %}
+                    <div class="card shadow mb-4 pb-4 h-100">
                     <!-- Card Header - Dropdown -->
                         <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
-                          <h6 class="m-2 font-weight-bold text-primary">Profile picture</h6>
-                          <div class="dropdown no-arrow">
-                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                            </a>
-                          </div>
+                          <h6 class="m-2 font-weight-bold text-primary">Best option</h6>
                         </div>
                         <!-- Card Body -->
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                           <div class="-file-image">
-                            <img style="width: {% if user.hierarchy=="Employee" %}13.5{% else %}16{% endif %}vw;"
-                                 class="rounded-circle" id="{{user.id}}_photo" src="/static/employees_pictures/{{user.id}}.jpg"
+                            <img style="width: 14vw;"
+                                 class="rounded-circle" id="{{option["employee"].id}}_photo" src="/static/employees_pictures/{{option["employee"].id}}.jpg"
                                  onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
-                          </div>
+                          </div><br><hr>
+                          <h5 class="text-center text-primary">{{ option["employee"].name }} {{ option["employee"].surname }}</h5><br><hr>
+                          {% if (option["hard"]|length) != 0 %}
+                            <h6>Hard skills</h6>
+                            <ul>
+                                {% for skill in option["hard"] %}
+                                 <li>{{ skill.name }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            {% if (option["soft"]|length) != 0 %}
+                            <h6>Soft skills</h6>
+                             <ul>
+                                {% for skill in option["soft"] %}
+                                 <li>{{ skill.name }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            <form class="align-text-bottom mt-auto" onsubmit="sendform({{ project_id }}, {{ option["employee"].id}})" action="/allocate" method="post">
+                                <hr>
+                                <h6 ><span class="text-info">Score: </span>{{ option["score"] }}</h6>
+                                <hr>
+                                <input style="display: none" type="text" name="project_id" id="project_{{ project_id }}" value="{{ project_id }}">
+                                <input style="display: none" type="text" name="employee_id" id="employee_{{ option["employee"].id }}" value="{{ option["employee"].id }}">
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-info">Allocate to project</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+                <div class="col-xl-1 col-lg-1"></div>
               <!-- =============================================================================================== -->
               <!-- =============================================================================================== -->
               <!-- ============================================== SECOND BEST ==================================== -->
               <!-- =============================================================================================== -->
               <!-- =============================================================================================== -->
-
+                <div class="col-xl-3 col-lg-5">
+                    {% set option = everything[project_id][1]  %}
+                    <div class="card shadow mb-4 pb-4 h-100">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-2 font-weight-bold text-primary">Second best option</h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body d-flex flex-column">
+                            <div class="-file-image">
+                                <img style="width: 14vw;"
+                                     class="rounded-circle" id="{{option["employee"].id}}_photo" src="/static/employees_pictures/{{option["employee"].id}}.jpg"
+                                     onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
+                            </div><br><hr>
+                            <h5 class="text-center text-primary">{{ option["employee"].name }} {{ option["employee"].surname }}</h5><br><hr>
+                            {% if (option["hard"]|length) != 0 %}
+                            <h6>Hard skills</h6>
+                            <ul>
+                                {% for skill in option["hard"] %}
+                                 <li>{{ skill.name }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            {% if (option["soft"]|length) != 0 %}
+                            <h6>Soft skills</h6>
+                             <ul>
+                                {% for skill in option["soft"] %}
+                                 <li>{{ skill.name }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            <form class="align-text-bottom mt-auto" onsubmit="sendform({{ project_id }}, {{ option["employee"].id}})" action="/allocate" method="post">
+                                <hr>
+                                <h6 ><span class="text-info">Score: </span>{{ option["score"] }}</h6>
+                                <hr>
+                                <input style="display: none" type="text" name="project_id" id="project_{{ project_id }}" value="{{ project_id }}">
+                                <input style="display: none" type="text" name="employee_id" id="employee_{{ option["employee"].id }}" value="{{ option["employee"].id }}">
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-info">Allocate to project</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-1 col-lg-1"></div>
+              <!-- =============================================================================================== -->
+              <!-- =============================================================================================== -->
+              <!-- ============================================== THIRD BEST ===================================== -->
+              <!-- =============================================================================================== -->
+              <!-- =============================================================================================== -->
+                <div class="col-xl-3 col-lg-5">
+                    {% set option = everything[project_id][2]  %}
+                    <div class="card shadow mb-4 pb-4 h-100">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-2 font-weight-bold text-primary">Third best option</h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body d-flex flex-column">
+                            <div class="-file-image">
+                                <img style="width: 14vw;"
+                                     class="rounded-circle" id="{{option["employee"].id}}_photo" src="/static/employees_pictures/{{option["employee"].id}}.jpg"
+                                     onerror="this.onerror=null; this.src='/static/employees_pictures/default.jpeg'" alt="Default image">
+                            </div><br><hr>
+                            <h5 class="text-center text-primary">{{ option["employee"].name }} {{ option["employee"].surname }}</h5><br><hr>
+                            {% if (option["hard"]|length) != 0 %}
+                            <h6>Hard skills</h6>
+                            <ul>
+                                {% for skill in option["hard"] %}
+                                 <li>{{ skill.name }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            {% if (option["soft"]|length) != 0 %}
+                            <h6>Soft skills</h6>
+                             <ul>
+                                {% for skill in option["soft"] %}
+                                 <li>{{ skill.name }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            <form class="align-text-bottom mt-auto" onsubmit="sendform({{ project_id }}, {{ option["employee"].id}})" action="/allocate" method="post">
+                                <hr>
+                                <h6 ><span class="text-info">Score: </span>{{ option["score"] }}</h6>
+                                <hr>
+                                <input style="display: none" type="text" name="project_id" id="project_{{ project_id }}" value="{{ project_id }}">
+                                <input style="display: none" type="text" name="employee_id" id="employee_{{ option["employee"].id }}" value="{{ option["employee"].id }}">
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-info">Allocate to project</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-1 col-lg-1"></div>
          </div>
+     </div>
      </div>
     {% endfor %}
 {% endblock %}

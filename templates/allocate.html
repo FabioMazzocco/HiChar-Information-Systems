@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block description %}Here you can add an employee who has just been hired{% endblock %}
+{% block title %}New employee{% endblock %}
+{% block user %}{{ user.name.upper() }}{% endblock %}
+{% block user_image %}{{ user.id }}.jpg{% endblock %}
+{% block additional_css_or_js %}
+<script>
+     window.setTimeout(function(){
+
+       // Move to a new location or you can do something else
+       window.location.href = "/requests";
+
+       }, 10000);
+
+ </script>
+{% endblock %}
+
+{% block pageContent %}
+    {% if success == 1 %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-gradient-success">
+                <h6 style="color: white" class="m-0 font-weight-bold">ALLOCATION COMPLETED!</h6>
+            </div>
+            <div class="card-body">
+                The employee has been correctly allocated to the project
+            </div>
+        </div>
+    {% else %}
+    <!-- Basic Card Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-gradient-danger">
+                <h6 style="color: white" class="m-0 font-weight-bold">ALLOCATION FAILED!</h6>
+            </div>
+            <div class="card-body">
+                {{ error_message }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

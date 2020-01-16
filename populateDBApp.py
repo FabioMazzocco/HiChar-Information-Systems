@@ -127,7 +127,7 @@ for l in f.readlines():
 db.session.commit()"""
 
 
-the_type = "Soft"    # Please mind the capital letter at the beginning. Possibilities: "Soft" or "Hard"
+"""the_type = "Soft"    # Please mind the capital letter at the beginning. Possibilities: "Soft" or "Hard"
 the_category = "Interpersonal Skills"
 the_name = "Humor"
 the_description = "The quality of being amusing or comic"
@@ -135,7 +135,7 @@ the_description = "The quality of being amusing or comic"
 skill = Skills(soft_hard=the_type, category=the_category, name=the_name, description=the_description)
 db.session.add(skill)
 db.session.commit()
-print(len(Skills.query.all()))
+print(len(Skills.query.all()))"""
 
 
 '''=================================================================================================================='''
@@ -160,14 +160,14 @@ print(len(Skills.query.all()))
 '''=================================================================================================================='''
 # FOR EACH PROJECT CHOOSE 6 SKILLS REQUIRED (4 SOFT SKILLS, 4 HARD SKILLS)
 f = open("toBeAdded.txt", "r")
-for l in f.readlines():
+"""for l in f.readlines():
     a = l.split(";")
     project_number = int(a[0])
     the_skill = a[1]
     the_time = int(a[2])
     the_satisfied = False
     db.session.add(RequestsProjects(id_project=project_number, skill=the_skill, experience=the_time, satisfied=False))
-db.session.commit()
+db.session.commit()"""
 
 """the_project_id = 1
 the_skill = "Project management software"  # First letter must be a capital letter
@@ -211,8 +211,17 @@ db.session.commit()"""
 the_name = "Learn Project Management"
 the_skill = "Project management"
 the_level = "Beginner"
-the_length = 100
+the_length = 100"""
 
-db.session.add(Courses(id=the_id, name=the_name, skill=the_skill, level=the_level, length=the_length))
-db.session.commit()
-print Courses.query.all()"""
+f = open("toBeAdded.txt", "r")
+for l in f.readlines():
+    a = l.split(";")
+    print a
+    the_id = int(a[0])
+    the_name = a[1]
+    the_skill = a[2]
+    the_level = a[3]
+    the_length = int(a[4])
+    db.session.add(Courses(id=the_id, name=the_name, skill=the_skill, level=the_level, length=the_length))
+    db.session.commit()
+print Courses.query.all()

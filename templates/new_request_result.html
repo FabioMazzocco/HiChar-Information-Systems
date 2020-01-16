@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block description %}Here you can add an employee who has just been hired{% endblock %}
+{% block title %}New employee{% endblock %}
+{% block user %}{{ user.name.upper() }}{% endblock %}
+{% block user_image %}{{ user.id }}.jpg{% endblock %}
+
+{% block pageContent %}
+    {% if success == 1 %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-gradient-success">
+                <h6 style="color: white" class="m-0 font-weight-bold">REQUEST COMPLETED!</h6>
+            </div>
+            <div class="card-body">
+                The new request has been correctly sent to the HR department
+            </div>
+        </div>
+    {% else %}
+    <!-- Basic Card Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-gradient-danger">
+                <h6 style="color: white" class="m-0 font-weight-bold">REQUEST FAILED!</h6>
+            </div>
+            <div class="card-body">
+                {{ error_message }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
