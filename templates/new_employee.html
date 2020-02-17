@@ -125,14 +125,14 @@
       </div>
       <div class="form-group col-md-2">
           <label for="newEmployeeAssigned">Assigned to project?</label>
-          <select style="text-align: center" onchange="projectAssignment()" name="newEmployeeAssigned" class="form-control" required>
+          <select style="text-align: center" onchange="projectAssignment()" name="newEmployeeAssigned" id="newEmployeeAssigned" class="form-control" required>
             <option value="0" name="0" selected>No</option>
             <option value="1" name="1">Yes</option>
           </select>
       </div>
       <div class="form-group col-md-3">
           <label for="newEmployeeProjectID">Project</label>
-          <select style="text-align: center" name="newEmployeeProjectID" class="form-control" disabled>
+          <select style="text-align: center" name="newEmployeeProjectID" id="newEmployeeProjectID" class="form-control" disabled>
             <option value="-1" name="no_selection" selected></option>
             {% for project in projects %}
             <option value="{{ project.id }}" name="{{ project.id }}">{{project.id}} - {{ project.name }}</option>
@@ -141,10 +141,10 @@
       </div>
       <div class="form-group col-md-3">
           <label for="newEmployeeRole">Role</label>
-          <select style="text-align: center" name="newEmployeeRole" class="form-control" disabled>
+          <select style="text-align: center" name="newEmployeeRole" id="newEmployeeRole" class="form-control" disabled>
             <option value="-1" name="no_selection" selected></option>
             {% for role in roles %}
-            <option value="{{ role.role }}" name="{{ project.role }}">{{project.role}}</option>
+            <option value="{{ role.role }}" name="{{ role.role }}">{{role.role}}</option>
             {% endfor %}
           </select>
       </div>

@@ -8,6 +8,8 @@ import arrow
 from flask import Flask, render_template, request, redirect, session
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 from jinja2 import TemplateNotFound, Environment
 from sqlalchemy.orm import load_only
 
@@ -26,8 +28,8 @@ db = SQLAlchemy(app)
 
 
 class EmployeesTable(db.Model):
-    # __tablename__ = 'employeestable'
-    id = db.Column(db.Integer, primary_key=True)
+    # _tablename__ = 'employeestable'
+    id = db.Column(db.Integer, primary_key=True)  # ForeignKey('userpass.id')
     username = db.Column(db.String(30), nullable=False)
     name = db.Column(db.String(30), nullable=False)
     surname = db.Column(db.String(50), nullable=False)
@@ -36,8 +38,10 @@ class EmployeesTable(db.Model):
     date_of_birth = db.Column(db.DateTime, nullable=False)
     date_of_hiring = db.Column(db.DateTime, nullable=False)
     assigned_to_project = db.Column(db.Boolean, nullable=False)
-    project_id = db.Column(db.Integer, nullable=True)
+    project_id = db.Column(db.Integer, nullable=True)  # ForeignKey('projects.id')
     role = db.Column(db.String(30), nullable=True)
+    # id_rel = relationship('UserPass')
+    # project_rel = relationship('Projects')
 
     def __str__(self):
         return "Employee " + id + " (" + self.surname + " ," + self.name + ")"
@@ -79,26 +83,31 @@ class Skills(db.Model):
 
 class PersonnelSkills(db.Model):
     # __tablename__ = 'personnelskills'
-    id = db.Column(db.Integer, primary_key=True)
-    skill_name = db.Column(db.String(50), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  # ForeignKey('userpass.id')
+    skill_name = db.Column(db.String(50), primary_key=True)  # ForeignKey('skills.name')
     time = db.Column(db.Integer, nullable=True)
+    # id_rel = relationship('UserPass')
+    # skill_rel = relationship('Skills')
 
 
 class RequestsProjects(db.Model):
     # __tablename__ = 'requestsprojects'
-    id_project = db.Column(db.Integer, primary_key=True)
-    skill = db.Column(db.String(30), primary_key=True)
+    id_project = db.Column(db.Integer, primary_key=True)  # ForeignKey('projects.id')
+    skill = db.Column(db.String(30), primary_key=True)  # ForeignKey('skills.name')
     experience = db.Column(db.Integer, default=0)
     satisfied = db.Column(db.Boolean, default=False)
+    # project_rel = relationship('Projects')
+    # skill_rel = relationship('Skills')
 
 
 class Courses(db.Model):
     # __tablename__ = 'courses'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
-    skill = db.Column(db.String(30), nullable=False)
+    skill = db.Column(db.String(30), nullable=False)  # ForeignKey('skills.name')
     level = db.Column(db.String(15), nullable=False)
     length = db.Column(db.Integer, nullable=False)
+    # skill_rel = relationship('Skills')
 
 
 '''=================================================================================================================='''
@@ -147,7 +156,7 @@ def index():
             return redirect("/login", code=302)
         session['id'] = employee.id
         logged_users[employee.id] = employee
-        print all_projects
+        # print all_projects
         return render_template("index.html", user=employee, utilities=utilities())
     return redirect("/login", code=302)
 
@@ -243,6 +252,7 @@ def new_employee():
     logged_user = logged_users.get(session['id'])
     projectsList = Projects.query.all()
     rolesList = Roles.query.all()
+    # print rolesList
     if logged_user.hierarchy == "HR":
         return render_template('new_employee.html', user=logged_user, utilities=utilities(), projects=projectsList,
                                roles=rolesList)

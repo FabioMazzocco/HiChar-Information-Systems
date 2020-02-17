@@ -1,32 +1,30 @@
-4;Project management software;12;0
-4;Pivot tables;6;0
-4;Marketing Campaign Management;6;0
-4;Analytics;12;0
-4;Scheduling;24;0
-4;Trust;36;0
-4;Project Management;12;0
-4;Goal setting;4;0
-3;Project management software;12;0
-3;Storage and Data Management;12;0
-3;Digital communication;6;0
-3;HTML;6;0
-3;Critical observation;12;0
-3;Self-starter;12;0
-3;Mentoring;4;0
-3;Innovation;9;0
-2;Social media;12;0
-2;Risk Assessment;12;0
-2;Resource management;6;0
-2;User Experience (UX) Design;12;0
-2;Imagination;12;0
-2;Lateral thinking;6;0
-2;Decision-making;6;0
-2;Confidence;9;0
-1;iOS App Development;3;0
-1;Agile methodologies;12;0
-1;Google Analytics;6;0
-1;Foreign language;9;0
-1;Collaboration;24;0
-1;Time-management;48;0
-1;Diplomacy;12;0
-1;Focus;12;0
+Designer;A designer is a person who makes designs for objects. An automobile designer designs automobiles.
+Operator;A person who operates equipment or a machine or runs a business.
+Driver;A person who drives a vehicle.
+Office manager;The person in this slot also may serve as human resource director, purchasing agent and traffic cop with salespeople and vendors. This employee, in general, will oversee everything not involved in production and may also handle some marketing duties.
+Receptionist;Sometimes called the front-line person, the receptionist handles phone calls, greets visitors, handles the mail, does the billing and performs many other tasks as required by the office manager.
+Purchasing manager;Duties of this position may be filled by either or both the general manager/top management person and the office manager. The supervisor or lead person often also is involved.
+Marketing manager;A marketing manager may be on staff to handle all aspects related to promoting and selling the product. The top management person often handles this duty in a small business.
+Product Manager;A product manager is a professional role that is responsible for the development of products for an organization, known as the practice of product management.
+Costumer Support;Customer support is a range of customer services to assist customers in making cost effective and correct use of a product. It includes assistance in planning, installation, training, troubleshooting, maintenance, upgrading, and disposal of a product.
+Human Resources;Human resource managers are in charge of every aspect of employee life cycle in an organization. The duties include planning, recruitment and selection process, posting job ads, evaluating the performance of employees, organizing resumes and job applications, scheduling interviews and assisting in the process and ensuring background checks.
+Accountant;An accountant is a person who records business transactions on behalf of an organization, reports on company performance to management, and issues financial statements.
+Sales Engineer;A sales engineer is someone who sells complex scientific and technological products or services to businesses.
+Electrical Engineer;An electrical engineer is someone who designs and develops new electrical systems, solves problems and tests equipment.
+Mechanical Engineer;Mechanical engineers design power-producing machines, such as electric generators, internal combustion engines, and steam and gas turbines, as well as power-using machines, such as refrigeration and air-conditioning systems.
+Meeting Planner;A meeting planner is the person who brings together every person involved in producing a meeting, incentive, convention or special event.
+Director of Maintenance;Maintenance directors manage an organization's maintenance department at the highest level.
+Car Porter;A Car Porter is responsible for helping auto dealerships run as smoothly as possible.
+Speech-writer;A speech writer is a person who is hired to prepare and write speeches that will be delivered by another person.
+Translator;A translator is a person who helps people who speak different languages to communicate or who takes something (such as a speech or a book) in one language and who puts it into a different language for people to understand.
+Social Media Specialist;Social Media Specialists are responsible for planning, implementing and monitoring the company's Social Media strategy in order to increase brand awareness, improve Marketing efforts and increase sales.
+Counselor;A counselor is a person who is specifically trained to provide advice, or a person you turn to for advice. An example of counselor is a professional who you go to in order to talk about your problems and to learn solutions for coping with stress or sadness.
+Researcher;A researcher is somebody who performs research, independently as a principal investigator, the search for knowledge or in general any systematic investigation to establish facts. Researchers can work in academic, industrial, government, or private institutions.
+Research Assistant;A research assistant, or RA, is a researcher employed, often on a temporary contract,[1] by a university, a research institute or a private held organization, for the purpose of assisting in academic or private research.
+Data Analyst;A data analyst is someone who collects, processes and performs statistical analyses of data.
+Budget Analyst;Budget analysts help organizations allocate their financial resources.
+Finance Manager;A finance manager organizes and manages an organization's or an individual's financial portfolio.They also prepare financial reports, oversee investments and help with cash management.
+Supervisors;Person in the first-line management who monitors and regulates employees in their performance of assigned or delegated tasks.
+Shipping and Receiving Staff;A shipping/receiving clerk typically works in a warehouse environment and is responsible for tracking inventory levels, handling all aspects of shipping and receiving, and keeping accurate records. On the shipping side, they package items, print labels, weigh packages and determine appropriate postage.
+Shareholders;A shareholder is an individual or institution that legally owns one or more shares of stock in a public or private corporation.
+lawyer;A lawyer is a professional who is qualified to offer advice about the law or represent someone in legal matters.

@@ -24,6 +24,11 @@
             //this_form.reset()
             document.form.hide()
         }
+
+        function sorry(){
+            alert("Sorry, this function is not available yet");
+            return false;
+        }
     </script>
 </head>
 
@@ -61,16 +66,20 @@
                     </div>
                     <input style="color: white" type="submit" value="Login" class="btn btn-primary btn-user btn-block">
                     <hr>
-                    <a href="index.html" onclick="return false;" class="btn btn-google btn-user btn-block">
+                    <a href="#" onclick="sorry()" class="btn btn-google btn-user btn-block">
                       <i class="fas fa-wifi"></i> Login under CECOMP network
                     </a>
                   </form>
                   <hr>
                   <div class="text-center">
-                    <a class="small" href="forgot-password">Forgot Password?</a>
+                    <a class="small" href="mailto:domain_administrator@cecomp.com?Subject=Forgot%20password
+                                            &amp;body=Dear%20domain%20administrator%2C%20please%20send%20a%20new%20one%20to%20%5Binsert%20your%20name%20here%5D">
+                        Forgot Password?</a>
                   </div>
                   <div class="text-center">
-                    <a class="small" href="forgot-everything">Forgot Username and/or Password?</a>
+                    <a class="small" href="mailto:domain_administrator@cecomp.com?Subject=Forgot%20username%20and%20password
+                                            &amp;body=Dear%20domain%20administrator%2C%20please%20send%20a%20new%20ones%20to%20%5Binsert%20your%20name%20here%5D">
+                        Forgot Username and/or Password?</a>
                   </div>
                 </div>
               </div>

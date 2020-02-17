@@ -155,12 +155,32 @@ print(len(Skills.query.all()))"""
 
 '''=================================================================================================================='''
 '''=================================================================================================================='''
+'''================================================ Adding roles ===================================================='''
+'''=================================================================================================================='''
+'''=================================================================================================================='''
+f = open("toBeAdded.txt", "r")
+for l in f.readlines():
+    a = l.split(";")
+    role_name = a[0]
+    role_description = a[1]
+    db.session.add(Roles(role=role_name, description=role_description))
+db.session.commit()
+print(Roles.query.all())
+"""the_project_id = 1
+the_skill = "Project management software"  # First letter must be a capital letter
+requested = RequestsProjects(id_project=the_project_id, skill=the_skill, experience=12, satisfied=False)
+db.session.add(requested)
+db.session.commit()
+print(RequestsProjects.query.all())
+
+'''=================================================================================================================='''
+'''=================================================================================================================='''
 '''============================================== Adding projects-skills ============================================'''
 '''=================================================================================================================='''
 '''=================================================================================================================='''
 # FOR EACH PROJECT CHOOSE 6 SKILLS REQUIRED (4 SOFT SKILLS, 4 HARD SKILLS)
-f = open("toBeAdded.txt", "r")
-"""for l in f.readlines():
+# f = open("toBeAdded.txt", "r")
+for l in f.readlines():
     a = l.split(";")
     project_number = int(a[0])
     the_skill = a[1]
@@ -213,7 +233,7 @@ the_skill = "Project management"
 the_level = "Beginner"
 the_length = 100"""
 
-f = open("toBeAdded.txt", "r")
+"""f = open("toBeAdded.txt", "r")
 for l in f.readlines():
     a = l.split(";")
     print a
@@ -224,4 +244,4 @@ for l in f.readlines():
     the_length = int(a[4])
     db.session.add(Courses(id=the_id, name=the_name, skill=the_skill, level=the_level, length=the_length))
     db.session.commit()
-print Courses.query.all()
+print Courses.query.all()"""

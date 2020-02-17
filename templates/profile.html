@@ -105,58 +105,8 @@ window.onload = function(){
         </div>
     </div>
 
-    <div class="row">
-    <!-- SOFT/HARD SKILLS DIVISION -->
-        <!-- Donut Chart -->
-            <div class="col-xl-5 col-lg-5">
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Skills type</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="chart-pie pt-4">
-                    <canvas id="pieChartSkills"></canvas>
-                  </div>
-                  <hr>
-                    <span style="font-size: 80%">Number of share of soft and hard skills with respect to the total skills</span>
-                </div>
-              </div>
-            </div>
-
-    <!-- BASIC INFORMATION -->
-        <div class="col-xl-7 col-lg-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Basic information</h6>
-                </div>
-                <div class="card-body" {% if profile.assigned_to_project == False %}style="margin-bottom: 126px
-                                        {% else %}style="margin-bottom: 74px{% endif %}">
-                    <table>
-                        <tr><td width="40%">ID: </td><td>{{ profile.id }}</tr>
-                        <tr><td>NAME: </td><td>{{ profile.name }}</td></tr>
-                        <tr><td>SURNAME: </td><td>{{ profile.surname }}</td></tr>
-                        <tr><td>Birthday: </td><td>{{ profile.date_of_birth.date() }}</td></tr>
-                        <tr><td>Email: </td><td><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></td></tr>
-                        <tr><td>Hiring date: </td><td>{{ profile.date_of_hiring.date() }}</td></tr>
-                        <tr><td>Job: </td><td>{% if profile.hierarchy!="PM" %}{{ profile.hierarchy }}{% else %}Project manager{% endif %}</td></tr>
-                        <tr><td>Status: </td><td>
-                                            {% if profile.hierarchy == "Manager" %}Active{% else %}
-                                                {% if profile.assigned_to_project==False %}Free
-                                                {% else %}Assigned to project{% endif %}
-                                            {% endif %}
-                                            </td></tr>
-                        {% if profile.assigned_to_project==True %}
-                        <tr><td>Project id: </td><td>{{ profile.project_id }}</td></tr>
-                        <tr><td>Role: </td><td>{{ profile.role }}</td></tr>
-                        {% endif %}
-                    </table>
-                </div>
-            </div>
-        </div>
-
     <!-- SKILLS -->
+    <div class="row">
         <div class="col-xl-12 col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -191,5 +141,31 @@ window.onload = function(){
             </div>
         </div>
     </div>
+
+    <div class="row">
+    <!-- SOFT/HARD SKILLS DIVISION -->
+        <!-- Donut Chart -->
+            <div class="col-xl-12 col-lg-12">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Skills type</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-pie pt-4">
+                    <canvas id="pieChartSkills"></canvas>
+                  </div>
+                  <hr>
+                    <span style="font-size: 80%">Number of share of soft and hard skills with respect to the total skills</span>
+                </div>
+              </div>
+            </div>
+
+
+        </div>
+
+
+
 
 {% endblock %}
