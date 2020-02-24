@@ -512,6 +512,10 @@ def allocate():
         return render_template("allocate.html", user=logged_user, utilities=utilities(), success=0,
                                error_message=message)
     employee = EmployeesTable.query.filter_by(id=employee).first()
+    if employee.assigned_to_project:
+        message = "Sorry, the employee has already been allocated previouosly"
+        return render_template("allocate.html", user=logged_user, utilities=utilities(), success=0,
+                               error_message=message)
     employee.assigned_to_project = True
     employee.project_id = project
     for this_request in RequestsProjects.query.filter_by(id_project=project).all():
@@ -562,7 +566,7 @@ def new_request_result():
 def user_dashboard(pagename):
     global logged_users
     pagename = pagename.split(".")[0]
-    if session['id'] is None or logged_users.get(session['id']) is None:
+    if 'id' not in session or logged_users.get(session['id']) is None:
         return redirect('/login', code=302)
     logged_user = logged_users.get(session['id'])
     all_users = EmployeesTable.query.all()
